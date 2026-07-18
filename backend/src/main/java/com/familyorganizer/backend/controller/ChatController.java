@@ -32,6 +32,13 @@ public class ChatController {
         return ResponseEntity.ok(messageService.getFamilyHistory(familyId));
     }
 
+    // Endpoint REST para enviar un mensaje (alternativa al WebSocket)
+    @PostMapping("/api/messages/send")
+    public ResponseEntity<Message> sendMessageRest(@RequestBody ChatMessageDto chatMessageDto) {
+        Message saved = messageService.saveMessage(chatMessageDto.getContent(), chatMessageDto.getSenderUsername());
+        return ResponseEntity.ok(saved);
+    }
+
     // Endpoint WebSocket para enviar y recibir mensajes
     @MessageMapping("/chat/{familyId}")
     @SendTo("/topic/family/{familyId}")
