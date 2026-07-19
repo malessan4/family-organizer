@@ -6,12 +6,16 @@ import com.familyorganizer.backend.dto.RegisterRequest;
 import com.familyorganizer.backend.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*") // Para permitir llamadas desde el frontend Next.js
+// CORS manejado globalmente en SecurityConfig — no usar @CrossOrigin aquí
 public class AuthController {
 
     private final AuthService authService;
