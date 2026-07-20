@@ -10,9 +10,9 @@ export default function Home() {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [familyName, setFamilyName] = useState('');
   const [secretCode, setSecretCode] = useState('');
-  const [role, setRole] = useState('PARENT');
   const [error, setError] = useState('');
 
   const router = useRouter();
@@ -25,21 +25,27 @@ export default function Home() {
         const res = await api.post('/auth/login', { username, password });
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('username', res.data.username);
+        localStorage.setItem('displayName', res.data.displayName || res.data.username);
+        localStorage.setItem('familyName', res.data.familyName || '');
+        localStorage.setItem('familyCode', res.data.familyCode || '');
         router.push('/dashboard');
       } else {
         const res = await api.post('/auth/register', {
           username,
           password,
+          displayName,
           familyName,
           secretCode,
-          role
         });
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('username', res.data.username);
+        localStorage.setItem('displayName', res.data.displayName || res.data.username);
+        localStorage.setItem('familyName', res.data.familyName || '');
+        localStorage.setItem('familyCode', res.data.familyCode || '');
         router.push('/dashboard');
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Hubo un error en la autenticación.');
+      setError(err.response?.data?.message || 'Hubo un error. Verificá los datos e intentá de nuevo.');
     }
   };
 
@@ -98,7 +104,20 @@ export default function Home() {
                 >
                   <div>
                     <label className="block text-sm font-medium text-slate-300 mb-1">
-                      Nombre de la Familia <span className="text-slate-500">(opcional)</span>
+                      Tu nombre <span className="text-slate-500">(como te verán los demás)</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={displayName}
+                      onChange={(e) => setDisplayName(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                      style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+                      placeholder="Ej. Papá, Mamá, Sofi..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-1">
+                      Nombre de la familia <span className="text-slate-500">(solo si creás una nueva)</span>
                     </label>
                     <input
                       type="text"
@@ -108,18 +127,6 @@ export default function Home() {
                       style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
                       placeholder="Ej. Familia Rodríguez"
                     />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-1">Rol</label>
-                    <select
-                      value={role}
-                      onChange={(e) => setRole(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-                      style={{ background: 'rgba(30,41,59,0.9)', border: '1px solid rgba(255,255,255,0.12)' }}
-                    >
-                      <option value="PARENT">Padre / Madre</option>
-                      <option value="CHILD">Hijo / Hija</option>
-                    </select>
                   </div>
                 </motion.div>
               )}
@@ -173,7 +180,7 @@ export default function Home() {
                     placeholder="Ej. FAMILIA-2024"
                   />
                   <p className="text-xs text-slate-500 mt-1.5">
-                    Crea un código nuevo para fundar tu familia, o usa el de tu familia para unirte.
+                    Inventá un código para crear tu familia, o usá el de tu familia para unirte.
                   </p>
                 </motion.div>
               )}
