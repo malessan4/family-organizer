@@ -16,6 +16,7 @@ interface Message {
 
 interface ChatViewProps {
   username: string;
+  displayName: string;
 }
 
 export default function ChatView({ username }: ChatViewProps) {
