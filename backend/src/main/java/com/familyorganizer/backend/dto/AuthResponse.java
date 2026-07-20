@@ -12,5 +12,7 @@ import lombok.NoArgsConstructor;
 public class AuthResponse {
     private String token;
     private String username;
+    private String displayName;
     private String familyName;
+    private String familyCode; // Para que el usuario pueda compartirlo con su familia
 }
