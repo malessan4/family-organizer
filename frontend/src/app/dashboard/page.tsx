@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutDashboard, CheckSquare, Calendar, MessageCircle, LogOut, Users, Menu, X } from 'lucide-react';
+import { CheckSquare, Calendar, MessageCircle, LogOut, Users, Menu, Copy, Check } from 'lucide-react';
 import KanbanBoard from '@/components/KanbanBoard';
 import CalendarView from '@/components/CalendarView';
 import ChatView from '@/components/ChatView';
@@ -16,24 +16,35 @@ const tabs = [
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState('kanban');
+  const [displayName, setDisplayName] = useState('');
+  const [familyName, setFamilyName] = useState('');
+  const [familyCode, setFamilyCode] = useState('');
   const [username, setUsername] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [codeCopied, setCodeCopied] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (!token) {
-      router.push('/');
-      return;
-    }
-    setUsername(localStorage.getItem('username') || 'Usuario');
+    if (!token) { router.push('/'); return; }
+    setUsername(localStorage.getItem('username') || '');
+    setDisplayName(localStorage.getItem('displayName') || localStorage.getItem('username') || 'Usuario');
+    setFamilyName(localStorage.getItem('familyName') || 'Mi Familia');
+    setFamilyCode(localStorage.getItem('familyCode') || '');
   }, [router]);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
+    localStorage.clear();
     router.push('/');
   };
+
+  const copyCode = () => {
+    navigator.clipboard.writeText(familyCode);
+    setCodeCopied(true);
+    setTimeout(() => setCodeCopied(false), 2000);
+  };
+
+  const getInitial = (name: string) => name?.charAt(0)?.toUpperCase() || '?';
 
   return (
     <div className="min-h-screen flex" style={{ background: '#0f172a' }}>
@@ -49,51 +60,72 @@ export default function DashboardPage() {
       </AnimatePresence>
 
       {/* Sidebar */}
-      <motion.aside
+      <aside
         className={`fixed lg:static inset-y-0 left-0 z-30 w-64 flex flex-col transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
         style={{ background: 'rgba(15,23,42,0.98)', borderRight: '1px solid rgba(255,255,255,0.07)' }}
       >
         {/* Logo */}
-        <div className="p-6 border-b border-white/10">
+        <div className="p-5 border-b border-white/10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#6366f1,#ec4899)' }}>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+              style={{ background: 'linear-gradient(135deg,#6366f1,#ec4899)' }}>
               <Users className="w-5 h-5 text-white" />
             </div>
-            <div>
-              <h1 className="text-white font-bold text-sm leading-tight">Family</h1>
-              <h1 className="text-white font-bold text-sm leading-tight">Organizer</h1>
+            <div className="min-w-0">
+              <p className="text-white font-bold text-sm truncate">{familyName}</p>
+              <p className="text-slate-500 text-xs">Family Organizer</p>
             </div>
           </div>
         </div>
 
-        {/* User */}
-        <div className="px-6 py-4 border-b border-white/10">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-white text-sm"
-              style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)' }}>
-              {username.charAt(0).toUpperCase()}
+        {/* Código de familia */}
+        {familyCode && (
+          <div className="mx-4 mt-4 p-3 rounded-xl" style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.25)' }}>
+            <p className="text-xs text-slate-400 mb-1.5 font-medium">Código familiar</p>
+            <div className="flex items-center justify-between gap-2">
+              <code className="text-indigo-300 text-xs font-mono font-bold truncate">{familyCode}</code>
+              <button
+                onClick={copyCode}
+                className="shrink-0 p-1.5 rounded-lg transition-all hover:scale-110"
+                style={{ background: codeCopied ? 'rgba(16,185,129,0.2)' : 'rgba(99,102,241,0.2)' }}
+                title="Copiar código"
+              >
+                {codeCopied
+                  ? <Check className="w-3 h-3 text-emerald-400" />
+                  : <Copy className="w-3 h-3 text-indigo-400" />
+                }
+              </button>
             </div>
-            <div>
-              <p className="text-white text-sm font-semibold">{username}</p>
-              <p className="text-slate-400 text-xs">Miembro familiar</p>
+            <p className="text-xs text-slate-600 mt-1.5">Compartilo para que tu familia se una</p>
+          </div>
+        )}
+
+        {/* User info */}
+        <div className="px-4 py-4 mt-2 mx-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)' }}>
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-white text-sm shrink-0"
+              style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)' }}>
+              {getInitial(displayName)}
+            </div>
+            <div className="min-w-0">
+              <p className="text-white text-sm font-semibold truncate">{displayName}</p>
+              <p className="text-slate-500 text-xs truncate">@{username}</p>
             </div>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 p-4 mt-2 space-y-1">
           {tabs.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
               onClick={() => { setActiveTab(id); setSidebarOpen(false); }}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                activeTab === id
-                  ? 'text-white'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+                activeTab === id ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-white/5'
               }`}
-              style={activeTab === id ? { background: 'rgba(99,102,241,0.2)', borderLeft: '3px solid #6366f1' } : {}}
+              style={activeTab === id ? { background: 'rgba(99,102,241,0.2)', borderLeft: '3px solid #6366f1', paddingLeft: '13px' } : {}}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className="w-4 h-4 shrink-0" />
               {label}
             </button>
           ))}
@@ -109,23 +141,23 @@ export default function DashboardPage() {
             Cerrar sesión
           </button>
         </div>
-      </motion.aside>
+      </aside>
 
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top bar */}
-        <header className="sticky top-0 z-10 px-6 py-4 flex items-center gap-4" style={{ background: 'rgba(15,23,42,0.95)', borderBottom: '1px solid rgba(255,255,255,0.07)', backdropFilter: 'blur(12px)' }}>
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="lg:hidden text-slate-400 hover:text-white transition-colors"
-          >
+        <header className="sticky top-0 z-10 px-6 py-4 flex items-center gap-4"
+          style={{ background: 'rgba(15,23,42,0.95)', borderBottom: '1px solid rgba(255,255,255,0.07)', backdropFilter: 'blur(12px)' }}>
+          <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-slate-400 hover:text-white transition-colors">
             <Menu className="w-5 h-5" />
           </button>
           <div>
-            <h2 className="text-white font-bold text-lg capitalize">
+            <h2 className="text-white font-bold text-lg">
               {tabs.find(t => t.id === activeTab)?.label}
             </h2>
-            <p className="text-slate-500 text-xs">Familiar — {new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+            <p className="text-slate-500 text-xs">
+              Hola, {displayName} 👋 — {new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })}
+            </p>
           </div>
         </header>
 
@@ -141,7 +173,7 @@ export default function DashboardPage() {
             >
               {activeTab === 'kanban' && <KanbanBoard />}
               {activeTab === 'calendar' && <CalendarView />}
-              {activeTab === 'chat' && <ChatView username={username} />}
+              {activeTab === 'chat' && <ChatView username={username} displayName={displayName} />}
             </motion.div>
           </AnimatePresence>
         </main>
