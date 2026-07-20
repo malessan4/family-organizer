@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LogIn, UserPlus, Key, Users } from 'lucide-react';
 import api from '@/lib/api';
 import { useRouter } from 'next/navigation';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function Home() {
   const [isLogin, setIsLogin] = useState(true);
@@ -50,34 +51,37 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen animated-bg flex items-center justify-center p-4">
+    <div className="min-h-screen animated-bg flex items-center justify-center p-4 text-t-primary">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="w-full max-w-md rounded-2xl overflow-hidden shadow-2xl"
-        style={{ background: 'rgba(15, 23, 42, 0.88)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.1)' }}
+        style={{ background: 'var(--bg-panel)', backdropFilter: 'blur(20px)', border: '1px solid var(--border-glass)' }}
       >
         {/* Header */}
-        <div className="px-8 pt-8 pb-6 text-center border-b border-white/10">
+        <div className="relative px-8 pt-8 pb-6 text-center" style={{ borderBottom: '1px solid var(--border-glass)' }}>
+          <div className="absolute top-4 right-4">
+            <ThemeToggle />
+          </div>
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4"
             style={{ background: 'linear-gradient(135deg, #6366f1, #ec4899)' }}>
             <Users className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white">Family Organizer</h1>
-          <p className="text-slate-400 mt-1 text-sm">Organiza el día a día de tu familia</p>
+          <h1 className="text-3xl font-bold text-t-primary">Family Organizer</h1>
+          <p className="text-t-muted mt-1 text-sm">Organiza el día a día de tu familia</p>
 
           {/* Tabs */}
-          <div className="flex mt-6 rounded-xl p-1" style={{ background: 'rgba(255,255,255,0.06)' }}>
+          <div className="flex mt-6 rounded-xl p-1 bg-glass-1">
             <button
               onClick={() => setIsLogin(true)}
-              className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${isLogin ? 'bg-indigo-500 text-white shadow' : 'text-slate-400 hover:text-white'}`}
+              className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${isLogin ? 'bg-indigo-500 text-white shadow' : 'text-t-muted hover:text-t-primary'}`}
             >
               Iniciar Sesión
             </button>
             <button
               onClick={() => setIsLogin(false)}
-              className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${!isLogin ? 'bg-indigo-500 text-white shadow' : 'text-slate-400 hover:text-white'}`}
+              className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${!isLogin ? 'bg-indigo-500 text-white shadow' : 'text-t-muted hover:text-t-primary'}`}
             >
               Registrarse
             </button>
@@ -85,9 +89,9 @@ export default function Home() {
         </div>
 
         {/* Form */}
-        <div className="px-8 py-6">
+        <div className="px-8 py-6 bg-glass-1">
           {error && (
-            <div className="mb-4 p-3 rounded-xl text-sm text-center text-red-300 border border-red-500/40"
+            <div className="mb-4 p-3 rounded-xl text-sm text-center text-red-500 font-medium border border-red-500/40"
               style={{ background: 'rgba(239,68,68,0.15)' }}>
               {error}
             </div>
@@ -103,28 +107,26 @@ export default function Home() {
                   className="space-y-4 overflow-hidden"
                 >
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-1">
-                      Tu nombre <span className="text-slate-500">(como te verán los demás)</span>
+                    <label className="block text-sm font-medium text-t-secondary mb-1">
+                      Tu nombre <span className="text-t-muted font-normal">(como te verán los demás)</span>
                     </label>
                     <input
                       type="text"
                       value={displayName}
                       onChange={(e) => setDisplayName(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-                      style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+                      className="w-full px-4 py-3 rounded-xl text-t-primary placeholder-t-muted text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all bg-glass-2 border-border-glass border"
                       placeholder="Ej. Papá, Mamá, Sofi..."
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-1">
-                      Nombre de la familia <span className="text-slate-500">(solo si creás una nueva)</span>
+                    <label className="block text-sm font-medium text-t-secondary mb-1">
+                      Nombre de la familia <span className="text-t-muted font-normal">(solo si creás una nueva)</span>
                     </label>
                     <input
                       type="text"
                       value={familyName}
                       onChange={(e) => setFamilyName(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-                      style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+                      className="w-full px-4 py-3 rounded-xl text-t-primary placeholder-t-muted text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all bg-glass-2 border-border-glass border"
                       placeholder="Ej. Familia Rodríguez"
                     />
                   </div>
@@ -133,27 +135,25 @@ export default function Home() {
             </AnimatePresence>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">Usuario</label>
+              <label className="block text-sm font-medium text-t-secondary mb-1">Usuario</label>
               <input
                 type="text"
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-                style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+                className="w-full px-4 py-3 rounded-xl text-t-primary placeholder-t-muted text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all bg-glass-2 border-border-glass border"
                 placeholder="tu_usuario"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">Contraseña</label>
+              <label className="block text-sm font-medium text-t-secondary mb-1">Contraseña</label>
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-                style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+                className="w-full px-4 py-3 rounded-xl text-t-primary placeholder-t-muted text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all bg-glass-2 border-border-glass border"
                 placeholder="••••••••"
               />
             </div>
@@ -166,8 +166,8 @@ export default function Home() {
                   exit={{ opacity: 0, height: 0 }}
                   className="overflow-hidden"
                 >
-                  <label className="block text-sm font-medium text-slate-300 mb-1 flex items-center gap-1">
-                    <Key className="w-3.5 h-3.5 text-indigo-400" />
+                  <label className="block text-sm font-medium text-t-secondary mb-1 flex items-center gap-1">
+                    <Key className="w-3.5 h-3.5 text-indigo-500" />
                     Código Secreto Familiar
                   </label>
                   <input
@@ -175,11 +175,10 @@ export default function Home() {
                     required={!isLogin}
                     value={secretCode}
                     onChange={(e) => setSecretCode(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-                    style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+                    className="w-full px-4 py-3 rounded-xl text-t-primary placeholder-t-muted text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all bg-glass-2 border-border-glass border"
                     placeholder="Ej. FAMILIA-2024"
                   />
-                  <p className="text-xs text-slate-500 mt-1.5">
+                  <p className="text-xs text-t-muted mt-1.5">
                     Inventá un código para crear tu familia, o usá el de tu familia para unirte.
                   </p>
                 </motion.div>
