@@ -59,16 +59,16 @@ export default function CalendarView() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Calendar grid */}
-      <div className="lg:col-span-2 rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+      <div className="lg:col-span-2 rounded-2xl p-5 bg-glass-1" style={{ border: '1px solid var(--border-glass)' }}>
         {/* Month nav */}
         <div className="flex items-center justify-between mb-5">
-          <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-all">
+          <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="p-2 rounded-xl text-t-muted hover:text-t-primary hover:bg-glass-1 transition-all">
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <h3 className="text-white font-bold capitalize">
+          <h3 className="text-t-primary font-bold capitalize">
             {format(currentMonth, 'MMMM yyyy', { locale: es })}
           </h3>
-          <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-all">
+          <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="p-2 rounded-xl text-t-muted hover:text-t-primary hover:bg-glass-1 transition-all">
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
@@ -76,7 +76,7 @@ export default function CalendarView() {
         {/* Day names */}
         <div className="grid grid-cols-7 mb-2">
           {['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'].map(d => (
-            <div key={d} className="text-center text-xs font-semibold text-slate-500 py-1">{d}</div>
+            <div key={d} className="text-center text-xs font-semibold text-t-muted py-1">{d}</div>
           ))}
         </div>
 
@@ -92,7 +92,7 @@ export default function CalendarView() {
                 key={day.toString()}
                 onClick={() => setSelectedDay(day)}
                 className={`relative aspect-square flex flex-col items-center justify-center rounded-xl text-sm font-medium transition-all hover:scale-105 ${
-                  isSelected ? 'text-white' : todayDay ? 'text-indigo-400' : 'text-slate-300 hover:bg-white/10'
+                  isSelected ? 'text-white' : todayDay ? 'text-indigo-500' : 'text-t-secondary hover:bg-glass-1'
                 }`}
                 style={isSelected ? { background: 'linear-gradient(135deg,#6366f1,#8b5cf6)' } : todayDay ? { background: 'rgba(99,102,241,0.15)' } : {}}
               >
@@ -107,13 +107,13 @@ export default function CalendarView() {
       </div>
 
       {/* Events panel */}
-      <div className="rounded-2xl p-5 flex flex-col" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+      <div className="rounded-2xl p-5 flex flex-col bg-glass-1" style={{ border: '1px solid var(--border-glass)' }}>
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-white font-bold text-sm">
+            <h3 className="text-t-primary font-bold text-sm">
               {selectedDay ? format(selectedDay, "d 'de' MMMM", { locale: es }) : 'Seleccioná un día'}
             </h3>
-            <p className="text-slate-500 text-xs">{selectedEvents.length} evento{selectedEvents.length !== 1 ? 's' : ''}</p>
+            <p className="text-t-muted text-xs">{selectedEvents.length} evento{selectedEvents.length !== 1 ? 's' : ''}</p>
           </div>
           {selectedDay && (
             <button onClick={() => setShowForm(!showForm)} className="p-2 rounded-xl text-white transition-all hover:scale-110" style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)' }}>
@@ -132,18 +132,18 @@ export default function CalendarView() {
               <input
                 type="text" value={newTitle} onChange={e => setNewTitle(e.target.value)}
                 placeholder="Nombre del evento..."
-                className="w-full px-3 py-2 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }}
+                className="w-full px-3 py-2 rounded-xl text-t-primary placeholder-t-muted text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-glass-2"
+                style={{ border: '1px solid var(--border-glass)' }}
                 autoFocus
               />
               <input
                 type="time" value={newTime} onChange={e => setNewTime(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                style={{ background: 'rgba(30,41,59,0.9)', border: '1px solid rgba(255,255,255,0.1)', colorScheme: 'dark' }}
+                className="w-full px-3 py-2 rounded-xl text-t-primary text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-glass-2"
+                style={{ border: '1px solid var(--border-glass)' }}
               />
               <div className="flex gap-2">
                 <button type="submit" className="flex-1 py-2 rounded-xl text-white text-xs font-semibold" style={{ background: '#6366f1' }}>Guardar</button>
-                <button type="button" onClick={() => setShowForm(false)} className="flex-1 py-2 rounded-xl text-slate-400 text-xs" style={{ background: 'rgba(255,255,255,0.07)' }}>Cancelar</button>
+                <button type="button" onClick={() => setShowForm(false)} className="flex-1 py-2 rounded-xl text-t-secondary text-xs bg-glass-1">Cancelar</button>
               </div>
             </motion.form>
           )}
@@ -151,19 +151,19 @@ export default function CalendarView() {
 
         <div className="flex-1 space-y-2 overflow-auto">
           {selectedEvents.length === 0 ? (
-            <div className="text-center py-12 text-slate-600 text-sm">Sin eventos este día</div>
+            <div className="text-center py-12 text-t-muted text-sm">Sin eventos este día</div>
           ) : (
             selectedEvents.map(ev => (
-              <motion.div key={ev.id} layout className="group p-3 rounded-xl flex items-start gap-3"
-                style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)' }}>
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(99,102,241,0.2)' }}>
-                  <Clock className="w-4 h-4 text-indigo-400" />
+              <motion.div key={ev.id} layout className="group p-3 rounded-xl flex items-start gap-3 bg-glass-1"
+                style={{ border: '1px solid var(--border-glass)' }}>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(99,102,241,0.15)' }}>
+                  <Clock className="w-4 h-4 text-indigo-500" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-white text-sm font-medium">{ev.title}</p>
-                  <p className="text-indigo-400 text-xs">{ev.startTime ? format(new Date(ev.startTime), 'HH:mm') : ''}</p>
+                  <p className="text-t-primary text-sm font-medium">{ev.title}</p>
+                  <p className="text-indigo-500 text-xs">{ev.startTime ? format(new Date(ev.startTime), 'HH:mm') : ''}</p>
                 </div>
-                <button onClick={() => deleteEvent(ev.id)} className="opacity-0 group-hover:opacity-100 text-slate-600 hover:text-red-400 transition-all">
+                <button onClick={() => deleteEvent(ev.id)} className="opacity-0 group-hover:opacity-100 text-t-muted hover:text-red-500 transition-all">
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </motion.div>
