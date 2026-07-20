@@ -27,39 +27,48 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public AuthResponse register(RegisterRequest request) {
-        
-        // Verificar si la familia ya existe mediante el código secreto
+
+        // Buscar familia por código secreto
         Optional<Family> familyOpt = familyRepository.findBySecretCode(request.getSecretCode());
         Family family;
-        
+
         if (familyOpt.isPresent()) {
+            // El código ya existe: el usuario se une a esa familia
             family = familyOpt.get();
         } else {
-            // Si no existe, creamos una nueva
+            // El código no existe: se crea una familia nueva
             family = Family.builder()
-                    .name(request.getFamilyName() != null ? request.getFamilyName() : "Familia")
+                    .name(request.getFamilyName() != null && !request.getFamilyName().isBlank()
+                            ? request.getFamilyName()
+                            : "Mi Familia")
                     .secretCode(request.getSecretCode())
                     .build();
             family = familyRepository.save(family);
         }
 
-        // Crear el usuario
+        // El displayName por defecto es el username si no se especificó
+        String displayName = (request.getDisplayName() != null && !request.getDisplayName().isBlank())
+                ? request.getDisplayName()
+                : request.getUsername();
+
+        // Crear el usuario (rol MEMBER por defecto, asignado en la entidad)
         User user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
+                .displayName(displayName)
                 .family(family)
                 .build();
-                
+
         userRepository.save(user);
 
-        // Generar JWT
         String jwtToken = jwtUtil.generateToken(user.getUsername());
-        
+
         return AuthResponse.builder()
                 .token(jwtToken)
                 .username(user.getUsername())
+                .displayName(user.getDisplayName())
                 .familyName(family.getName())
+                .familyCode(family.getSecretCode())
                 .build();
     }
 
@@ -70,16 +79,18 @@ public class AuthService {
                         request.getPassword()
                 )
         );
-        
+
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow();
-                
+
         String jwtToken = jwtUtil.generateToken(user.getUsername());
-        
+
         return AuthResponse.builder()
                 .token(jwtToken)
                 .username(user.getUsername())
+                .displayName(user.getDisplayName())
                 .familyName(user.getFamily().getName())
+                .familyCode(user.getFamily().getSecretCode())
                 .build();
     }
 }
