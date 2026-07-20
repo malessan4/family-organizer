@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
 @RequiredArgsConstructor
-
 public class TaskController {
 
     private final TaskService taskService;
@@ -36,19 +36,42 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody Task task, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<Task> createTask(
+            @RequestBody Task task,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
         User user = userDetails.getUser();
         return ResponseEntity.ok(taskService.createTask(task, user.getFamily().getId(), user.getUsername()));
     }
 
     @PatchMapping("/{taskId}/status")
-    public ResponseEntity<Task> updateTaskStatus(@PathVariable Long taskId, @RequestParam TaskStatus status) {
-        return ResponseEntity.ok(taskService.updateTaskStatus(taskId, status));
+    public ResponseEntity<Task> updateTaskStatus(
+            @PathVariable Long taskId,
+            @RequestParam TaskStatus status,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        // Pasamos el displayName del usuario que está moviendo la tarea
+        String moverDisplayName = userDetails.getUser().getDisplayName();
+        return ResponseEntity.ok(taskService.updateTaskStatus(taskId, status, moverDisplayName));
     }
 
     @DeleteMapping("/{taskId}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long taskId) {
         taskService.deleteTask(taskId);
         return ResponseEntity.noContent().build();
+    }
+
+    // Permite establecer o borrar la fecha de vencimiento (null = sin vencimiento)
+    @PatchMapping("/{taskId}/due-date")
+    public ResponseEntity<Task> updateDueDate(
+            @PathVariable Long taskId,
+            @RequestParam(required = false) String dueDate) {
+        LocalDate date = (dueDate != null && !dueDate.isBlank()) ? LocalDate.parse(dueDate) : null;
+        return ResponseEntity.ok(taskService.updateDueDate(taskId, date));
+    }
+
+    @PatchMapping("/{taskId}/description")
+    public ResponseEntity<Task> updateDescription(
+            @PathVariable Long taskId,
+            @RequestBody String description) {
+        return ResponseEntity.ok(taskService.updateDescription(taskId, description));
     }
 }
