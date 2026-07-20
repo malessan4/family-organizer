@@ -67,13 +67,13 @@ export default function ChatView({ username }: ChatViewProps) {
   const getColor = (name: string) => avatarColors[name?.charCodeAt(0) % avatarColors.length];
 
   return (
-    <div className="flex flex-col h-[calc(100vh-180px)] rounded-2xl overflow-hidden"
-      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+    <div className="flex flex-col h-[calc(100vh-180px)] rounded-2xl overflow-hidden bg-glass-1"
+      style={{ border: '1px solid var(--border-glass)' }}>
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.length === 0 && (
-          <div className="text-center text-slate-600 text-sm py-12">
+          <div className="text-center text-t-muted text-sm py-12">
             💬 Sé el primero en escribir un mensaje familiar
           </div>
         )}
@@ -99,18 +99,18 @@ export default function ChatView({ username }: ChatViewProps) {
 
               <div className={`max-w-xs lg:max-w-md ${isMe ? 'items-end' : 'items-start'} flex flex-col gap-0.5`}>
                 {showAvatar && !isMe && (
-                  <span className="text-xs text-slate-500 ml-1">{msg.sender?.username}</span>
+                  <span className="text-xs text-t-muted ml-1">{msg.sender?.username}</span>
                 )}
                 <div
                   className="px-4 py-2.5 rounded-2xl text-sm break-words"
                   style={isMe
                     ? { background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', color: 'white', borderBottomRightRadius: '4px' }
-                    : { background: 'rgba(255,255,255,0.08)', color: '#e2e8f0', borderBottomLeftRadius: '4px' }
+                    : { background: 'var(--bg-glass-2)', color: 'var(--text-primary)', borderBottomLeftRadius: '4px' }
                   }
                 >
                   {msg.content}
                 </div>
-                <span className="text-xs text-slate-600 px-1">
+                <span className="text-xs text-t-muted px-1">
                   {msg.timestamp ? format(new Date(msg.timestamp), 'HH:mm', { locale: es }) : ''}
                 </span>
               </div>
@@ -124,15 +124,15 @@ export default function ChatView({ username }: ChatViewProps) {
       <form
         onSubmit={sendMessage}
         className="flex items-center gap-3 p-4"
-        style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}
+        style={{ borderTop: '1px solid var(--border-glass)' }}
       >
         <input
           type="text"
           value={input}
           onChange={e => setInput(e.target.value)}
           placeholder="Escribí un mensaje para tu familia..."
-          className="flex-1 px-4 py-3 rounded-2xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-          style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }}
+          className="flex-1 px-4 py-3 rounded-2xl text-t-primary placeholder-t-muted text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all bg-glass-2"
+          style={{ border: '1px solid var(--border-glass)' }}
         />
         <button
           type="submit"
