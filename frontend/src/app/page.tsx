@@ -15,12 +15,14 @@ export default function Home() {
   const [familyName, setFamilyName] = useState('');
   const [secretCode, setSecretCode] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setIsLoading(true);
     try {
       if (isLogin) {
         const res = await api.post('/auth/login', { username, password });
@@ -47,6 +49,8 @@ export default function Home() {
       }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Hubo un error. Verificá los datos e intentá de nuevo.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -187,11 +191,17 @@ export default function Home() {
 
             <button
               type="submit"
-              className="w-full py-3 rounded-xl font-bold text-white text-sm flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/30 mt-2"
+              disabled={isLoading}
+              className="w-full py-3 rounded-xl font-bold text-white text-sm flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/30 mt-2 disabled:opacity-70 disabled:hover:-translate-y-0 disabled:hover:shadow-none"
               style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}
             >
-              {isLogin ? <LogIn className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />}
-              {isLogin ? 'Iniciar Sesión' : 'Crear cuenta'}
+              {isLoading ? (
+                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              ) : isLogin ? <LogIn className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />}
+              {isLoading ? 'Cargando...' : isLogin ? 'Iniciar Sesión' : 'Crear cuenta'}
             </button>
           </form>
         </div>
