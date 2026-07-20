@@ -23,13 +23,19 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
+    // Nombre que se muestra en la app (ej: "Mamá", "Alessandro")
+    @Column(nullable = false)
+    private String displayName;
+
     @JsonIgnore
     @Column(nullable = false)
     private String password;
 
+    // Rol guardado para uso futuro. Por ahora todos son MEMBER.
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    @Builder.Default
+    private Role role = Role.MEMBER;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "family_id")
