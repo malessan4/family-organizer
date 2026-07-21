@@ -48,7 +48,7 @@ export default function DashboardPage() {
   const getInitial = (name: string) => name?.charAt(0)?.toUpperCase() || '?';
 
   return (
-    <div className="min-h-screen flex text-t-primary" style={{ background: 'var(--bg-app)' }}>
+    <div className="h-[100dvh] overflow-hidden flex text-t-primary" style={{ background: 'var(--bg-app)' }}>
       {/* Sidebar overlay mobile */}
       <AnimatePresence>
         {sidebarOpen && (
@@ -115,8 +115,8 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 p-4 mt-2 space-y-1">
+        {/* Navigation (Desktop) */}
+        <nav className="hidden lg:flex flex-1 p-4 mt-2 space-y-1 flex-col">
           {tabs.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
@@ -145,7 +145,7 @@ export default function DashboardPage() {
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 relative">
         {/* Top bar */}
         <header className="sticky top-0 z-10 px-6 py-4 flex items-center justify-between gap-4"
           style={{ background: 'var(--bg-panel)', borderBottom: '1px solid var(--border-glass)', backdropFilter: 'blur(12px)' }}>
@@ -166,7 +166,7 @@ export default function DashboardPage() {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 p-6 overflow-auto">
+        <main className="flex-1 p-6 pb-24 lg:pb-6 overflow-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -181,6 +181,23 @@ export default function DashboardPage() {
             </motion.div>
           </AnimatePresence>
         </main>
+
+        {/* Bottom Navigation (Mobile) */}
+        <nav className="lg:hidden absolute bottom-0 left-0 right-0 bg-glass-1 border-t flex items-center justify-around pb-safe pt-2 px-2"
+          style={{ borderColor: 'var(--border-glass)', backdropFilter: 'blur(20px)', zIndex: 40 }}>
+          {tabs.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              onClick={() => setActiveTab(id)}
+              className={`flex-1 flex flex-col items-center justify-center py-2 gap-1 rounded-xl transition-all ${
+                activeTab === id ? 'text-indigo-500' : 'text-t-muted hover:text-t-primary'
+              }`}
+            >
+              <Icon className={`w-6 h-6 transition-transform ${activeTab === id ? 'scale-110' : ''}`} />
+              <span className="text-[10px] font-medium">{label}</span>
+            </button>
+          ))}
+        </nav>
       </div>
     </div>
   );

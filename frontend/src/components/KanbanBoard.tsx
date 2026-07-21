@@ -414,7 +414,7 @@ export default function KanbanBoard() {
       <div className="flex items-center justify-between mb-6">
         <p className="text-t-secondary text-sm">{tasks.length} tarea{tasks.length !== 1 ? 's' : ''} en total</p>
         <button onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/25"
+          className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/25"
           style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)' }}>
           <Plus className="w-4 h-4" />Nueva tarea
         </button>
@@ -506,7 +506,7 @@ export default function KanbanBoard() {
 
                       <TaskHistoryBadge task={task} />
 
-                      <div className="flex gap-1 mt-2 opacity-0 group-hover:opacity-100 transition-all"
+                      <div className="flex gap-1 mt-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all flex-wrap"
                         onClick={e => e.stopPropagation()}>
                         {columns.filter(c => c.id !== col.id).map(c => (
                           <button key={c.id} onClick={() => moveTask(task, c.id)}
@@ -531,6 +531,15 @@ export default function KanbanBoard() {
           );
         })}
       </div>
+
+      {/* FAB Mobile */}
+      <button
+        onClick={() => { setShowForm(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+        className="md:hidden fixed bottom-20 right-6 w-14 h-14 rounded-full flex items-center justify-center shadow-xl text-white z-40 transition-transform active:scale-95"
+        style={{ background: 'linear-gradient(135deg,#6366f1,#ec4899)' }}
+      >
+        <Plus className="w-6 h-6" />
+      </button>
     </div>
   );
 }

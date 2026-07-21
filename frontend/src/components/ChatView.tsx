@@ -11,7 +11,7 @@ interface Message {
   id: number;
   content: string;
   timestamp: string;
-  sender: { username: string };
+  sender: { username: string; displayName?: string; };
 }
 
 interface ChatViewProps {
@@ -99,7 +99,7 @@ export default function ChatView({ username }: ChatViewProps) {
 
               <div className={`max-w-xs lg:max-w-md ${isMe ? 'items-end' : 'items-start'} flex flex-col gap-0.5`}>
                 {showAvatar && !isMe && (
-                  <span className="text-xs text-t-muted ml-1">{msg.sender?.username}</span>
+                  <span className="text-xs text-t-muted ml-1 font-medium">{msg.sender?.displayName || msg.sender?.username}</span>
                 )}
                 <div
                   className="px-4 py-2.5 rounded-2xl text-sm break-words"
@@ -110,8 +110,8 @@ export default function ChatView({ username }: ChatViewProps) {
                 >
                   {msg.content}
                 </div>
-                <span className="text-xs text-t-muted px-1">
-                  {msg.timestamp ? format(new Date(msg.timestamp), 'HH:mm', { locale: es }) : ''}
+                <span className="text-xs text-t-muted px-1 capitalize">
+                  {msg.timestamp ? format(new Date(msg.timestamp), 'EEEE HH:mm', { locale: es }) : ''}
                 </span>
               </div>
             </motion.div>
