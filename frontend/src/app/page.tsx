@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogIn, UserPlus, Key, Users } from 'lucide-react';
+import { LogIn, UserPlus, Key, Users, Eye, EyeOff } from 'lucide-react';
 import api from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -14,6 +14,7 @@ export default function Home() {
   const [displayName, setDisplayName] = useState('');
   const [familyName, setFamilyName] = useState('');
   const [secretCode, setSecretCode] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -72,7 +73,7 @@ export default function Home() {
             style={{ background: 'linear-gradient(135deg, #6366f1, #ec4899)' }}>
             <Users className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-t-primary">Family Organizer</h1>
+          <h1 className="text-3xl font-bold text-t-primary">Nido</h1>
           <p className="text-t-muted mt-1 text-sm">Organiza el día a día de tu familia</p>
 
           {/* Tabs */}
@@ -152,14 +153,24 @@ export default function Home() {
 
             <div>
               <label className="block text-sm font-medium text-t-secondary mb-1">Contraseña</label>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl text-t-primary placeholder-t-muted text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all bg-glass-2 border-border-glass border"
-                placeholder="••••••••"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl text-t-primary placeholder-t-muted text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all bg-glass-2 border-border-glass border pr-12"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-t-muted hover:text-t-primary transition-colors focus:outline-none"
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
 
             <AnimatePresence>
